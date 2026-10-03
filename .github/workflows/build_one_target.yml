@@ -28,6 +28,7 @@ on:
 permissions:
   contents: write
   actions: read
+  checks: write
 
 jobs:
   find-targets:

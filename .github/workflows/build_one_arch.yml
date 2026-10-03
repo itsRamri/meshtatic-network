@@ -20,6 +20,7 @@ on:
 permissions:
   contents: write
   actions: read
+  checks: write
 
 env:
   INPUT_ARCH: ${{ github.event.inputs.arch }}
