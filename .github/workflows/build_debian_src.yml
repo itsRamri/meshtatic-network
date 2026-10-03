@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   build-debian-src:
+    if: ${{ secrets.PPA_GPG_PRIVATE_KEY != '' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code

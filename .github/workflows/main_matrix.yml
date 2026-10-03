@@ -111,6 +111,7 @@ jobs:
       platform: ${{ matrix.build.platform }}
 
   build-debian-src:
+    if: github.repository == 'meshtastic/firmware'
     uses: ./.github/workflows/build_debian_src.yml
     with:
       series: UNRELEASED
