@@ -21,4 +21,8 @@ dch --create --distribution "$SERIES" --package "$package" --newversion "$PKG_VE
 	"GitHub Actions Automatic packaging for $PKG_VERSION~$SERIES"
 
 # Build the source deb
-debuild -S -nc -k"$GPG_KEY_ID"
+if [ -n "$GPG_KEY_ID" ]; then
+	debuild -S -nc -k"$GPG_KEY_ID"
+else
+	debuild -S -nc -us -uc
+fi

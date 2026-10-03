@@ -171,9 +171,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-        with:
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
 
       - uses: actions/download-artifact@v5
         with:
@@ -391,8 +388,9 @@ jobs:
         env:
           # On event/* branches, use the event name as the destination prefix
           DEST_PREFIX: ${{ contains(github.ref_name, 'event/') && format('{0}/', github.ref_name) || '' }}
+          DIST_PAGES_DEPLOY_KEY: ${{ secrets.DIST_PAGES_DEPLOY_KEY }}
         with:
-          deploy_key: ${{ secrets.DIST_PAGES_DEPLOY_KEY }}
+          deploy_key: ${{ env.DIST_PAGES_DEPLOY_KEY }}
           external_repository: meshtastic/meshtastic.github.io
           publish_branch: master
           publish_dir: ./publish

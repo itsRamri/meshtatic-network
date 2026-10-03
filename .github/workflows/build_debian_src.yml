@@ -21,7 +21,6 @@ permissions:
 
 jobs:
   build-debian-src:
-    if: ${{ secrets.PPA_GPG_PRIVATE_KEY != '' }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
@@ -43,9 +42,12 @@ jobs:
           sudo mk-build-deps --install --remove --tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes' debian/control
 
       - name: Import GPG key
+        if: env.PPA_GPG_PRIVATE_KEY != ''
         uses: crazy-max/ghaction-import-gpg@v6
+        env:
+          PPA_GPG_PRIVATE_KEY: ${{ secrets.PPA_GPG_PRIVATE_KEY }}
         with:
-          gpg_private_key: ${{ secrets.PPA_GPG_PRIVATE_KEY }}
+          gpg_private_key: ${{ env.PPA_GPG_PRIVATE_KEY }}
         id: gpg
 
       - name: Get release version string

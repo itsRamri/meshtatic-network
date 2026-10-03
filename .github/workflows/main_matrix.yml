@@ -27,7 +27,6 @@ on:
       - event/*
     paths-ignore:
       - "**.md"
-      #- "**.yml"
 
   workflow_dispatch:
 
@@ -421,8 +420,9 @@ jobs:
         env:
           # On event/* branches, use the event name as the destination prefix
           DEST_PREFIX: ${{ contains(github.ref_name, 'event/') && format('{0}/', github.ref_name) || '' }}
+          DIST_PAGES_DEPLOY_KEY: ${{ secrets.DIST_PAGES_DEPLOY_KEY }}
         with:
-          deploy_key: ${{ secrets.DIST_PAGES_DEPLOY_KEY }}
+          deploy_key: ${{ env.DIST_PAGES_DEPLOY_KEY }}
           external_repository: meshtastic/meshtastic.github.io
           publish_branch: master
           publish_dir: ./publish

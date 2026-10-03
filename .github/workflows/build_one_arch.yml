@@ -73,7 +73,7 @@ jobs:
       platform: ${{ matrix.build.arch }}
 
   build-debian-src:
-    if: ${{ github.repository == 'meshtastic/firmware' && github.event_name != 'workflow_dispatch' || inputs.arch == 'native' }}
+    if: ${{ github.repository == 'meshtastic/firmware' && (github.event_name != 'workflow_dispatch' || inputs.arch == 'native') }}
     uses: ./.github/workflows/build_debian_src.yml
     with:
       series: UNRELEASED
@@ -168,9 +168,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-        with:
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
 
       - uses: actions/download-artifact@v5
         with:
