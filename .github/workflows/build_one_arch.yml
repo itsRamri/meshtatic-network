@@ -17,7 +17,9 @@ on:
           - stm32
           - native
 
-permissions: read-all
+permissions:
+  contents: write
+  actions: read
 
 env:
   INPUT_ARCH: ${{ github.event.inputs.arch }}

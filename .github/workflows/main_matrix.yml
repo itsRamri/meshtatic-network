@@ -2,6 +2,11 @@ name: CI
 concurrency:
   group: ci-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
+permissions:
+  contents: write
+  packages: write
+  actions: read
+  pull-requests: write
 on:
   # # Triggers the workflow on push but only for the main branches
   push:
@@ -27,7 +32,6 @@ on:
 
 jobs:
   setup:
-    if: github.repository == 'meshtastic/firmware'
     strategy:
       fail-fast: true
       matrix:
@@ -62,7 +66,6 @@ jobs:
       check: ${{ steps.jsonStep.outputs.check }}
 
   version:
-    if: github.repository == 'meshtastic/firmware'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -85,7 +88,7 @@ jobs:
         check: ${{ fromJson(needs.setup.outputs.check) }}
 
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'workflow_dispatch' && github.repository == 'meshtastic/firmware' }}
+    if: ${{ github.event_name != 'workflow_dispatch' }}
     steps:
       - uses: actions/checkout@v5
       - name: Build base
@@ -107,7 +110,6 @@ jobs:
       platform: ${{ matrix.build.platform }}
 
   build-debian-src:
-    if: github.repository == 'meshtastic/firmware'
     uses: ./.github/workflows/build_debian_src.yml
     with:
       series: UNRELEASED
@@ -115,18 +117,17 @@ jobs:
     secrets: inherit
 
   package-pio-deps-native-tft:
-    if: ${{ github.repository == 'meshtastic/firmware' && github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     uses: ./.github/workflows/package_pio_deps.yml
     with:
       pio_env: native-tft
     secrets: inherit
 
   test-native:
-    if: ${{ !contains(github.ref_name, 'event/') && github.repository == 'meshtastic/firmware' }}
+    if: ${{ !contains(github.ref_name, 'event/') }}
     uses: ./.github/workflows/test_native.yml
 
   docker-deb-amd64:
-    if: github.repository == 'meshtastic/firmware'
     uses: ./.github/workflows/docker_build.yml
     with:
       distro: debian
@@ -135,7 +136,6 @@ jobs:
       push: false
 
   docker-deb-amd64-tft:
-    if: github.repository == 'meshtastic/firmware'
     uses: ./.github/workflows/docker_build.yml
     with:
       distro: debian
@@ -145,7 +145,6 @@ jobs:
       pio_env: native-tft
 
   docker-alp-amd64:
-    if: github.repository == 'meshtastic/firmware'
     uses: ./.github/workflows/docker_build.yml
     with:
       distro: alpine
@@ -154,7 +153,6 @@ jobs:
       push: false
 
   docker-alp-amd64-tft:
-    if: github.repository == 'meshtastic/firmware'
     uses: ./.github/workflows/docker_build.yml
     with:
       distro: alpine
@@ -164,7 +162,6 @@ jobs:
       pio_env: native-tft
 
   docker-deb-arm64:
-    if: github.repository == 'meshtastic/firmware'
     uses: ./.github/workflows/docker_build.yml
     with:
       distro: debian
@@ -173,7 +170,6 @@ jobs:
       push: false
 
   docker-deb-armv7:
-    if: github.repository == 'meshtastic/firmware'
     uses: ./.github/workflows/docker_build.yml
     with:
       distro: debian
@@ -183,7 +179,6 @@ jobs:
 
   gather-artifacts:
     # trunk-ignore(checkov/CKV2_GHA_1)
-    if: github.repository == 'meshtastic/firmware'
     permissions:
       contents: write
       pull-requests: write
