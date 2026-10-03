@@ -14,11 +14,24 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Get PR branch
+        uses: actions/github-script@v8
+        id: pr
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            core.setOutput('head_ref', pr.data.head.ref);
+            core.setOutput('head_repo', pr.data.head.repo.full_name);
+
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
+          ref: ${{ steps.pr.outputs.head_ref }}
+          repository: ${{ steps.pr.outputs.head_repo }}
 
       - name: Install trunk
         run: curl https://get.trunk.io -fsSL | bash
