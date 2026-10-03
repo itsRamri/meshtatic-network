@@ -28,6 +28,30 @@ unsigned char KeyMap[3][sizeof(keys_rows)][sizeof(keys_cols)] = {{{' ', '.', 'm'
                                                                   {'=', '(', ')', '?', '/', ']'},
                                                                   {'!', '@', '#', '$', '%', '\\'},
                                                                   {'1', '2', '3', '4', '5', 0x1a}}};
+#elif INPUTBROKER_MATRIX_TYPE == 2
+// 4x4 Matrix Keypad
+// Rows: R1(32), R2(33), R3(25), R4(26)
+// Cols: C1(27), C2(13), C3(16), C4(17)
+unsigned char KeyMap[3][sizeof(keys_rows)][sizeof(keys_cols)] = {
+    {// Layer 0: Default (Numbers & UI Navigation)
+     // Row 1: 1, 2, 3, A (Up)
+     {'1', '2', '3', 0xb5},
+     // Row 2: 4, 5, 6, B (Down)
+     {'4', '5', '6', 0xb6},
+     // Row 3: 7, 8, 9, C (Select/Enter)
+     {'7', '8', '9', 0x0d},
+     // Row 4: * (Shift), 0, # (Cancel/Dismiss), D (Back/Backspace)
+     {0x1a, '0', 0x1b, 0x08}},
+    {// Layer 1: Shift 1 (Alpha group a-m)
+     {'a', 'b', 'c', 'd'},
+     {'e', 'f', 'g', 'h'},
+     {'i', 'j', 'k', 'l'},
+     {0x1a, 'm', ' ', 0x08}},
+    {// Layer 2: Shift 2 (Alpha group n-z & punctuation)
+     {'n', 'o', 'p', 'q'},
+     {'r', 's', 't', 'u'},
+     {'v', 'w', 'x', 'y'},
+     {0x1a, 'z', '.', 0x0d}}};
 #endif
 
 KbMatrixBase::KbMatrixBase(const char *name) : concurrency::OSThread(name)
@@ -56,7 +80,7 @@ int32_t KbMatrixBase::runOnce()
 
     key = 0;
 
-    if (INPUTBROKER_MATRIX_TYPE == 1) {
+    if (INPUTBROKER_MATRIX_TYPE == 1 || INPUTBROKER_MATRIX_TYPE == 2) {
         // scan for keypresses
         for (byte i = 0; i < sizeof(keys_rows); i++) {
             digitalWrite(keys_rows[i], LOW);

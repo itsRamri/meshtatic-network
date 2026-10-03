@@ -68,7 +68,7 @@
 #define HW_VENDOR meshtastic_HardwareModel_TBEAM_V0P7
 #elif defined(LILYGO_TBEAM_S3_CORE)
 #define HW_VENDOR meshtastic_HardwareModel_LILYGO_TBEAM_S3_CORE
-#elif defined(DIY_V1)
+#elif defined(CUSTOM_RSK) || defined(DIY_V1)
 #define HW_VENDOR meshtastic_HardwareModel_DIY_V1
 #elif defined(RAK_11200)
 #define HW_VENDOR meshtastic_HardwareModel_RAK11200
